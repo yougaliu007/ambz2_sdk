@@ -6,7 +6,7 @@
 ### 1. 开发准备
 - 硬件准备
 准备开发板 AmebaZ2 Dev Board Version DEV_2V0
-![AmebaZ2-Dev-Board](https://www.amebaiot.com/wp-content/uploads/2019/07/start-1.png)
+![AmebaZ2-Dev-Board](https://main.qcloudimg.com/raw/7382f38d847dde5ddd7317a911692d59.jpg)
 
 -  代码下载
 ```
