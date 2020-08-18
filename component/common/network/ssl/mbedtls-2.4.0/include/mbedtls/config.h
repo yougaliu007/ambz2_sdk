@@ -34,9 +34,17 @@
 #elif defined(CONFIG_BAIDU_DUER) && CONFIG_BAIDU_DUER
 #define CONFIG_SSL_RSA          0
 #include "baidu_ca_mbedtls_config.h"
+#elif defined(CONFIG_TENCENT_IOT_EXPLORER) && CONFIG_TENCENT_IOT_EXPLORER
+#include "platform_stdlib.h"
+#include "mbedtls/config_psk.h"
 #elif defined(CONFIG_SSL_RSA) && CONFIG_SSL_RSA
+#if defined(ENABLE_AMAZON_COMMON)
+#include "platform_stdlib.h"
+#include "mbedtls/config_rsa_amazon.h"
+#else
 #include "platform_stdlib.h"
 #include "mbedtls/config_rsa.h"
+#endif
 #else
 #include "platform_stdlib.h"
 #include "mbedtls/config_all.h"

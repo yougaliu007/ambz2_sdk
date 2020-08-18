@@ -13,6 +13,9 @@
 #include "device_lock.h"
 #endif
    
+#if defined(CONFIG_EXAMPLE_TENCENT_IOT_EXPLORER_MQTT)
+#include <example_iot_explorer.h>
+#endif
 #if defined(CONFIG_EXAMPLE_MDNS) && CONFIG_EXAMPLE_MDNS
 #include <mdns/example_mdns.h>
 #endif
@@ -451,6 +454,10 @@ void example_entry(void)
 
 #if CONFIG_EXAMPLE_MQTT
 	example_mqtt();
+#endif
+	
+#if CONFIG_TENCENT_IOT_EXPLORER
+	example_tencent_iot_explorer();
 #endif
 
 #if CONFIG_QQ_LINK

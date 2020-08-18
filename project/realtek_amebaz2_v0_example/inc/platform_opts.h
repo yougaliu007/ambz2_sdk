@@ -76,6 +76,7 @@
 #define CONFIG_JD_SMART		0//on or off for jdsmart
 #define CONFIG_JOYLINK			0//on or off for jdsmart2.0
 #define CONFIG_QQ_LINK		0//on or off for qqlink
+#define CONFIG_TENCENT_IOT_EXPLORER     1//on or off for tencent iot explorer
 #define CONFIG_AIRKISS_CLOUD	0//on or off for weixin hardware cloud
 #define CONFIG_UART_YMODEM	0//support uart ymodem upgrade or not
 #define CONFIG_TRANSPORT	0//on or off the at command for transport socket

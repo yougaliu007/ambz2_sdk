@@ -1,100 +1,87 @@
-[![Realtek-logo](https://logos-download.com/wp-content/uploads/2016/05/Realtek_logo_logotype.png)][amebaZ2-guide-link]
+# 文档说明
+本项目基于公版的[AmebaZ2 SDK](https://github.com/ambiot/ambz2_sdk.git)集成移植[IoT Explorer C-SDK](https://github.com/tencentyun/qcloud-iot-explorer-sdk-embedded-c.git) ，并提供可运行的demo，同时介绍了在代码级别如何使用WiFi配网API，可结合腾讯连连小程序进行softAP及simpleConfig方式WiFi配网及设备绑定。
 
-For any questions, please visit our [website](https://www.amebaiot.com/en/) and [forum](https://www.amebaiot.com/en/questions/category/sdk-forum/) to get more information.
-# Getting Started with the AmebaZ2
-The AmebaZ2 board is able to use the amazon-freertos sdk version 1.4.7. The AmebaZ2 board is designed by Realtek and is a Wi-Fi ready chip.
+> 公版的**AmebaZ2 SDK**是针对RTL8720cf WiFi芯片的裁剪版本的SDK，NDA版本的SDK需要咨询Realtek获取，对于其他系列的WiFi芯片对应的SDK（8710/8720D等）都可以参照本项目的集成移植**IoT Explorer C-SDK**。
 
-1. Hardware Requirement
-The hardware components needed to test the amazon-freertos are listed below:
-
- * AmebaZ2 Dev Board Version DEV_2V0
-It is required to have the AmebaZ2 Dev board in order to run the amazon-freertos SDK. The current demo board version is: DEV_2V0
-
+### 1. 开发准备
+- 硬件准备
+准备开发板 AmebaZ2 Dev Board Version DEV_2V0
 [![AmebaZ2-Dev-Board](https://www.amebaiot.com/wp-content/uploads/2019/07/start-1.png)][amebaZ2-guide-link]
 
- * J-Link/J-Trace Debug Probe
-In order to program and download the software onto the AmebaZ2 board, a JLINK/JTRACE debugger device is needed. More details about the J-Link probe can be found here:
-https://www.segger.com/products/debug-probes/j-link/
+-  代码下载
+```
+git clone https://github.com/yougaliu007/ambz2_sdk.git
+```
 
-2. Supported Development Environment.
-Currently the amazon-freertos is supported by the IAR Embedded Workbench ver.8.30.1. For windows operating system only.
+- 修改设备三元组信息
+在`component/common/application/tencent_iot_explorer/platform/HAL_Device_freertos.c`中修改在腾讯云物联网开发平台注册的设备信息（目前仅支持密钥设备）：
 
-3. Pre-Requisite
+```
+/* Product Id */
+static char sg_product_id[MAX_SIZE_OF_PRODUCT_ID + 1]    = "PRODUCT_ID";
+/* Device Name */
+static char sg_device_name[MAX_SIZE_OF_DEVICE_NAME + 1]  = "YOUR_DEV_NAME";
+/* Device Secret */
+static char sg_device_secret[MAX_SIZE_OF_DEVICE_SECRET + 1] = "YOUR_IOT_PSK";
+```
 
-* Required source code
-* AmebaZ2 Dev Board DEV_2V0
-* IAR Embedded Workbench ver.8.30.1
-* Segger JLINK downloader
+### 2. 编译
+- AmebaZ2 SDK支持IAR、Cygwin、GCC多种交叉编译方式，具体参阅doc目录文档`AN0500 Realtek Ameba-ZII application note.en.pdf`，本文档基于Ubuntu环境的GCC编译方式描述。
 
-# Debugger Setups
-To download code or debug on Ameba-ZII, user needs to make sure the debugger is setup properly first. Ameba-ZII supports J-Link for flahing and debugging. The settings are described below. Since the DEV_2V0 board supports only the JLINK debugger we shall be highlighting the JLINK setup first.
-## J-Link Setup
-Ameba-ZII supports J-Link debugger. We need to connect the SWD connector to J-Link debugger. The connection is shown as below.
+- Ubuntu默认启动为`dash`，编译过程的脚本依赖`bash`，会导致脚本解析错误，所以需要[切换为`bash`](https://blog.csdn.net/gatieme/article/details/52136411)
 
-[![SWD](https://www.amebaiot.com/wp-content/uploads/2019/07/start-2.png)][amebaZ2-guide-link]
+- 进入到`project/realtek_amebaz2_v0_example/GCC-RELEASE`目录，执行编译
+```
+$ cd project/realtek_amebaz2_v0_example/GCC-RELEASE
+$ make clean && make 
+```
 
-* __Note: To be able to debug Ameba-ZII which is powered by Cortex-M33, user needs a J-Link debugger with the latest hardware version (Check https://wiki.segger.com/Software_and_Hardware_Features_Overview for details). J-Link with hardware version V10 is used to prepare this document.__
+### 3. 烧写
+- 下载方法，USB连接CON3口，按住开发板右侧uart_download按键，再按左侧复位键，进入升级模式。
+- 双击 `tools/flash/AmebaZII_PGTool_v1.2.16/AmebaZII_PGTool_v1.2.16.exe`，选择`project/realtek_amebaz2_v0_example/GCC-RELEASE/application_is/Debug/bin`目录下的`flash_is.bin`，点击`Downlaod`
+ ![down](https://main.qcloudimg.com/raw/b8b9765a94980349ef57e32f0727e029.png)
 
-The SWD connectors on the actual dev board are seen on the schematic as shown below:
+更多编译及下载的指导参考Realtek官网指引
+[官网 SDK](https://github.com/ambiot/ambz2_sdk.git)
+[官网入门](https://www.amebaiot.com/cn/amazon-freertos-getting-started/)
 
-[![Dev-board-schematic](https://www.amebaiot.com/wp-content/uploads/2019/07/start-3.png)][amebaZ2-guide-link]
+### 4. WiFi配网说明
+工程里面包含了WiFi配网及设备绑定的代码，关于softAP配网协议及接口使用请看 [WiFi设备softAP配网](https://github.com/tencentyun/qcloud-iot-esp-wifi/blob/master/docs/WiFi%E8%AE%BE%E5%A4%87softAP%E9%85%8D%E7%BD%91v2.0.md)，关于simpleConfig配网协议及接口使用请看 [WiFi设备simpleConfig配网](https://github.com/tencentyun/qcloud-iot-esp-wifi/blob/master/docs/WiFi%E8%AE%BE%E5%A4%87SmartConfig%E9%85%8D%E7%BD%91.md)。
 
-After finished these configuration, please connect it to PC side.
-
-* __Note: If you are using Virtual Machine as your platform, please make sure the USB connection setting between VM host and client is correct so that the VM client can detect the device.__
-
-## Windows Setup
-To be able to use J-Link debugger, you need to install J-Link GDB server first. For Windows, please check http://www.segger.com and download “J-Link Software and Documentation Pack” ( https://www.segger.com/downloads/jlink ). Run the executable "JLinkGDBServer.exe" to setup the configuration for the J-Link debugger. Make sure the configuration matches what is shown below:
-
-[![JLink-GDB-server](https://www.amebaiot.com/wp-content/uploads/2019/07/start-4.png)][amebaZ2-guide-link]
-
-Please check and make sure below information is shown properly.
-
-[![GDB-server-connected](https://www.amebaiot.com/wp-content/uploads/2019/07/start-5.png)][amebaZ2-guide-link]
-
-## Serial Port Setup
-Connect the AmebaZII to your PC by connecting a microUSB cable between connector 'CON3" and your PC. This connector can be seen on the schematic shown previously. The connector acts as both the serial port and the power supply to the board.
-## IAR Project Introduction
-IAR IDE provides the toolchain for Ameba-ZII. It allows users to write programs, compile and upload them to your board. Also, it supports step-by-step debugging. User can visit the official website of IAR Embedded Workbench, and install the IDE by following its instructions. The IAR Embedded Workbench requires a license, more details can be found at: https://www.iar.com/iar-embedded-workbench/#!?currentTab=free-trials
-
-* __Note: Please use IAR version 8.30 or above.__
+demo入口 `qcloud_demo_task` 示例了`softAP`和`simpleConfig`两种配网方式的选择，`WIFI_PROV_SOFT_AP_ENABLE`配置是否使能softAP配网，`WIFI_PROV_SIMPLE_CONFIG_ENABLE`配置是否使能simpleConfig。
 
 
-# Build and Run the FreeRTOS Demos
-All the amazon-freertos demo files are already built into the project file present in the folder: “amazon-freertos\demos\realtek\amebaz2\iar”
+### 5. 更新腾讯云物联 C-SDK
+如果有需要更新SDK，可根据使用的平台按下面步骤下载更新：
 
-[![Demo-file-location](https://www.amebaiot.com/wp-content/uploads/2019/07/start-6.png)][amebaZ2-guide-link]
+- 从GitHub下载C-SDK代码
 
-The project file is named “project_is.eww” and the application_is.ewp is already pre-configured with all the necessary files, pre-build and post-build scripts.
+```
+# 腾讯云物联网开发平台 IoT Explorer
+git clone https://github.com/tencentyun/qcloud-iot-explorer-sdk-embedded-c.git
 
-## Project Configurations
-1) There are a lot of configurations that can be enabled or disabled from the file “platform_opts.h”
-2) The default version will run the baseline software along with the amazon-freertos demos.
-3) The aws hello world example will run by default.
+# 腾讯云物联网通信 IoT Hub
+git clone https://github.com/tencentyun/qcloud-iot-sdk-embedded-c.git
+```
+- 配置CMake并执行代码抽取
+在C-SDK根目录的 CMakeLists.txt 中配置为freertos平台，并开启代码抽取功能。其他配置选项可以根据需要修改：
+```
+set(BUILD_TYPE                  "release")
+set(PLATFORM 	                "freertos")
+set(EXTRACT_SRC ON)
+set(FEATURE_AT_TCP_ENABLED OFF)
+```
+Linux环境运行以下命令
+```
+mkdir build
+cd build
+cmake ..
+```
+即可在output/qcloud_iot_c_sdk中找到相关代码文件。
 
-## Compile
-1) Open amazon-freertos\demos\realtek\amebaz2\iar \Project_is.eww.
-2) Confirm application_is in Work Space, right click application_is and choose “Rebuild All” to compile.
-3) Make sure there are no errors after compilation.
-
-## Generating Image Binary
-After compilation, the images partition.bin, bootloader.bin, firmware_is.bin and flash_is.bin can be seen in the EWARM-RELEASE\Debug\Exe.
-1) partition.bin stores partition table, recording the address of Boot image and firmware image;
-2) bootloader.bin is bootloader image;
-3) firmware_is.bin is application image;
-4) flash_is.bin links partition.bin, bootloader.bin and firmware_is.bin. Users need to choose flash_is.bin when downloading the image to board by PG Tool.
-
-## Download
-After successfully compiling the project and generating flash_is.bin, you can either:
-1) Directly download the image binary on to demo board from IAR IDE (as below)
-
-[![IAR-download-project](https://www.amebaiot.com/wp-content/uploads/2019/07/start-7.png)][amebaZ2-guide-link]
-
-2) Once the image is successfully downloaded, the dev board needs to be reset in order to be able to run the application and see the logs.
-3) Once the reset button is pushed the board will boot and run the demo program chosen.
-
-## Debugging
-1) IAR can be used for debugging purposes. The debugging confirmations are already built into the project file
-2) Open up IAR and go to Project and select your debug option.
-
-[amebaZ2-guide-link]: https://www.amebaiot.com/en/amazon-freertos-getting-started/
+- 拷贝替换项文件
+将output/qcloud_iot_c_sdk 文件夹拷贝替换本项目目录的 `component/common/application/tencent_iot_explorer` 文件夹
+- qcloud_iot_c_sdk 目录介绍：
+`include`目录为SDK供用户使用的API及可变参数，其中config.h为根据编译选项生成的编译宏。API具体介绍请参考C-SDK文档**C-SDK_API及可变参数说明**。
+`platform`目录为平台相关的代码，可根据设备的具体情况进行修改适配。具体的函数说明请参考C-SDK文档**C-SDK_Porting跨平台移植概述**
+`sdk_src`为SDK的核心逻辑及协议相关代码，一般不需要修改，其中`internal_inc`为SDK内部使用的头文件。
