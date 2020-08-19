@@ -1,7 +1,7 @@
 # 文档说明
-本项目基于公版的[AmebaZ2 SDK](https://github.com/ambiot/ambz2_sdk.git)集成移植[IoT Explorer C-SDK](https://github.com/tencentyun/qcloud-iot-explorer-sdk-embedded-c.git) ，并提供可运行的demo，同时介绍了在代码级别如何使用WiFi配网API，可结合腾讯连连小程序进行softAP及simpleConfig方式WiFi配网及设备绑定。
+本项目基于公版的[AmebaZ2 SDK](https://github.com/ambiot/ambz2_sdk.git)集成移植[IoT Explorer C-SDK](https://github.com/tencentyun/qcloud-iot-explorer-sdk-embedded-c.git) ，并提供可运行的demo，同时示例如何使用WiFi配网API，可结合腾讯连连小程序进行softAP及simpleConfig方式WiFi配网及设备绑定。
 
-> 公版的**AmebaZ2 SDK**是针对RTL8720cf WiFi芯片的裁剪版本的SDK，NDA版本的SDK需要咨询Realtek获取，对于其他系列的WiFi芯片对应的SDK（8710/8720D等）都可以参照本项目的集成移植**IoT Explorer C-SDK**。
+> 公版的**AmebaZ2 SDK**是针对RTL8720cf WiFi芯片的裁剪版本的SDK，NDA版本的SDK需要咨询Realtek获取，对于其他系列的WiFi芯片对应的SDK（8710/8720D等）都可以参照本项目集成移植**IoT Explorer C-SDK**。
 
 ### 1. 开发准备
 - 硬件准备
@@ -39,16 +39,19 @@ $ make clean && make
 ### 3. 烧写
 - 下载方法，USB连接CON3口，按住开发板右侧uart_download按键，再按左侧复位键，进入升级模式。
 - 双击 `tools/flash/AmebaZII_PGTool_v1.2.16/AmebaZII_PGTool_v1.2.16.exe`，选择`project/realtek_amebaz2_v0_example/GCC-RELEASE/application_is/Debug/bin`目录下的`flash_is.bin`，点击`Downlaod`
- ![down](https://main.qcloudimg.com/raw/b8b9765a94980349ef57e32f0727e029.png)
+
+ ![download](https://main.qcloudimg.com/raw/f65ccdec3744d6facaebe9cd3c4fa936.jpg)
 
 更多编译及下载的指导参考Realtek官网指引
+
 [官网 SDK](https://github.com/ambiot/ambz2_sdk.git)
+
 [官网入门](https://www.amebaiot.com/cn/amazon-freertos-getting-started/)
 
 ### 4. WiFi配网说明
 工程里面包含了WiFi配网及设备绑定的代码，关于softAP配网协议及接口使用请看 [WiFi设备softAP配网](https://github.com/tencentyun/qcloud-iot-esp-wifi/blob/master/docs/WiFi%E8%AE%BE%E5%A4%87softAP%E9%85%8D%E7%BD%91v2.0.md)，关于simpleConfig配网协议及接口使用请看 [WiFi设备simpleConfig配网](https://github.com/tencentyun/qcloud-iot-esp-wifi/blob/master/docs/WiFi%E8%AE%BE%E5%A4%87SmartConfig%E9%85%8D%E7%BD%91.md)。
 
-demo入口 `qcloud_demo_task` 示例了`softAP`和`simpleConfig`两种配网方式的选择，`WIFI_PROV_SOFT_AP_ENABLE`配置是否使能softAP配网，`WIFI_PROV_SIMPLE_CONFIG_ENABLE`配置是否使能simpleConfig。
+demo 入口 `qcloud_demo_task` 示例了`softAP`和`simpleConfig`两种配网方式的选择，`WIFI_PROV_SOFT_AP_ENABLE`配置是否使能softAP配网，`WIFI_PROV_SIMPLE_CONFIG_ENABLE`配置是否使能simpleConfig。
 
 
 ### 5. 更新腾讯云物联 C-SDK
@@ -81,7 +84,11 @@ cmake ..
 
 - 拷贝替换项文件
 将output/qcloud_iot_c_sdk 文件夹拷贝替换本项目目录的 `component/common/application/tencent_iot_explorer` 文件夹
+
 - qcloud_iot_c_sdk 目录介绍：
+
 `include`目录为SDK供用户使用的API及可变参数，其中config.h为根据编译选项生成的编译宏。API具体介绍请参考C-SDK文档**C-SDK_API及可变参数说明**。
+
 `platform`目录为平台相关的代码，可根据设备的具体情况进行修改适配。具体的函数说明请参考C-SDK文档**C-SDK_Porting跨平台移植概述**
+
 `sdk_src`为SDK的核心逻辑及协议相关代码，一般不需要修改，其中`internal_inc`为SDK内部使用的头文件。
