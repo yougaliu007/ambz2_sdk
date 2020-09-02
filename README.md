@@ -14,7 +14,7 @@ git clone https://github.com/yougaliu007/ambz2_sdk.git
 ```
 
 - 修改设备三元组信息
-在`component/common/application/tencent_iot_explorer/platform/HAL_Device_freertos.c`中修改在腾讯云物联网开发平台注册的设备信息（目前仅支持密钥设备）：
+在`component/common/application/qcloud_iot_c_sdk/platform/HAL_Device_freertos.c`中修改在腾讯云物联网开发平台注册的设备信息（目前仅支持密钥设备）：
 
 ```
 /* Product Id */
@@ -83,7 +83,7 @@ cmake ..
 即可在output/qcloud_iot_c_sdk中找到相关代码文件。
 
 - 拷贝替换项文件
-将output/qcloud_iot_c_sdk 文件夹拷贝替换本项目目录的 `component/common/application/tencent_iot_explorer` 文件夹
+将output/qcloud_iot_c_sdk 文件夹拷贝替换本项目目录的 `component/common/application/qcloud_iot_c_sdk` 文件夹
 
 - qcloud_iot_c_sdk 目录介绍：
 
